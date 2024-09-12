@@ -25,20 +25,36 @@
         <CollectionView ItemsSource="{Binding CurrentTasks}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Padding="10" ColumnDefinitions="*,*">
+                    <Grid Padding="10" ColumnDefinitions="*,*,Auto,Auto">
                         <!-- Primera columna: Título -->
                         <Label Text="{Binding Title}" 
-                       FontSize="18" 
-                       FontAttributes="Bold" 
-                       TextColor="DarkBlue"
-                       VerticalOptions="Center"
-                       Grid.Column="0" />
+                               FontSize="18" 
+                               FontAttributes="Bold" 
+                               TextColor="DarkBlue"
+                               VerticalOptions="Center"
+                               Grid.Column="0" />
                         <!-- Segunda columna: Asignado a -->
                         <Label Text="{Binding AssignedTo}" 
-                       FontSize="14" 
-                       TextColor="Gray" 
-                       VerticalOptions="Center"
-                       Grid.Column="1" />
+                               FontSize="14" 
+                               TextColor="Gray" 
+                               VerticalOptions="Center"
+                               Grid.Column="1" />
+                        <!-- Tercera columna: Botón Modificar -->
+                        <Button Text="Modificar"
+                                Command="{Binding Path=BindingContext.EditTaskCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="Orange"
+                                TextColor="White"
+                                VerticalOptions="Center"
+                                Grid.Column="2" />
+                        <!-- Cuarta columna: Botón Eliminar -->
+                        <Button Text="Eliminar"
+                                Command="{Binding Path=BindingContext.RemoveTaskCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="Red"
+                                TextColor="White"
+                                VerticalOptions="Center"
+                                Grid.Column="3" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

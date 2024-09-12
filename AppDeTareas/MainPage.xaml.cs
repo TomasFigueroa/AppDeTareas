@@ -5,45 +5,29 @@ namespace AppDeTareas
 {
     public partial class MainPage : ContentPage
     {
-        public ObservableCollection<Project> Projects { get; set; }
-        public Command AddTaskCommand { get; set; }
         public ObservableCollection<TaskItem> CurrentTasks { get; set; }
-
+        public Command AddTaskCommand { get; set; }
+        public Command<TaskItem> RemoveTaskCommand { get; set; }
+        public Command<TaskItem> EditTaskCommand { get; set; }
 
         public MainPage()
         {
             InitializeComponent();
 
-            // Crear algunos proyectos hardcodeados con tareas, asegurándonos de que Tasks es ObservableCollection
-            Projects = new ObservableCollection<Project>
-    {
-        new Project("Proyecto 1", "Descripción del Proyecto 1", DateTime.Now.AddDays(-5), DateTime.Now.AddMonths(1))
-        {
-            Tasks = new ObservableCollection<TaskItem>
+            // Inicializar las tareas y comandos
+            CurrentTasks = new ObservableCollection<TaskItem>
             {
                 new TaskItem("Tarea 1", "Juan", false, 1),
-                new TaskItem("Tarea 2", "Maria", true, 2),
-            }
-        },
-        new Project("Proyecto 2", "Descripción del Proyecto 2", DateTime.Now, DateTime.Now.AddMonths(2))
-        {
-            Tasks = new ObservableCollection<TaskItem>
-            {
-                new TaskItem("Tarea 3", "Carlos", false, 3),
-                new TaskItem("Tarea 4", "Lucia", true, 1),
-            }
-        }
-    };
+                new TaskItem("Tarea 2", "Maria", true, 2)
+            };
 
-            // Inicializamos CurrentTasks con las tareas del primer proyecto
-            CurrentTasks = Projects[0].Tasks;
-
-            // Inicializar el comando para agregar tareas
             AddTaskCommand = new Command(AddTask);
+            RemoveTaskCommand = new Command<TaskItem>(RemoveTask);
+            EditTaskCommand = new Command<TaskItem>(EditTask);
+
             BindingContext = this;
         }
 
-        // Método para agregar una nueva tarea al primer proyecto (Projects[0])
         private void AddTask()
         {
             // Validaciones básicas
@@ -55,13 +39,13 @@ namespace AppDeTareas
 
             // Crear una nueva tarea usando los datos ingresados
             var newTask = new TaskItem(
-                newTaskTitle.Text,              // Título de la tarea
-                newTaskAssignedTo.Text,         // Persona asignada
-                false,                          // La tarea comienza como no completada
-                newTaskPriority.SelectedIndex + 1 // La prioridad es seleccionada en el Picker (índice +1)
+                newTaskTitle.Text,
+                newTaskAssignedTo.Text,
+                false,
+                newTaskPriority.SelectedIndex + 1
             );
 
-            // Agregar la nueva tarea a CurrentTasks (que está vinculada a las tareas del primer proyecto)
+            // Agregar la nueva tarea a CurrentTasks
             CurrentTasks.Add(newTask);
 
             // Limpiar los campos de entrada
@@ -69,5 +53,36 @@ namespace AppDeTareas
             newTaskAssignedTo.Text = string.Empty;
             newTaskPriority.SelectedIndex = -1;
         }
+
+        // Método para eliminar la tarea
+        private void RemoveTask(TaskItem task)
+        {
+            if (task != null)
+            {
+                CurrentTasks.Remove(task);
+            }
+        }
+
+        // Método para modificar la tarea
+        private async void EditTask(TaskItem task)
+        {
+            if (task != null)
+            {
+                // Mostrar una página o diálogo para editar la tarea
+                var newTitle = await DisplayPromptAsync("Modificar Tarea", "Modificar el título de la tarea:", initialValue: task.Title);
+                if (!string.IsNullOrEmpty(newTitle))
+                {
+                    task.Title = newTitle;
+                }
+
+                var newAssignedTo = await DisplayPromptAsync("Modificar Tarea", "Modificar la persona asignada:", initialValue: task.AssignedTo);
+                if (!string.IsNullOrEmpty(newAssignedTo))
+                {
+                    task.AssignedTo = newAssignedTo;
+                }
+            }
+        }
     }
 }
+
+
