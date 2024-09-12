@@ -1,0 +1,48 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AppDeTareas.MainPage">
+
+    <StackLayout Padding="20">
+        <!-- Entrada de datos para nueva tarea -->
+        <Entry x:Name="newTaskTitle" Placeholder="Título de la nueva tarea" />
+        <Entry x:Name="newTaskAssignedTo" Placeholder="Asignado a" />
+        <Picker x:Name="newTaskPriority" Title="Prioridad">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:Int32}">
+                    <x:Int32>1</x:Int32>
+                    <x:Int32>2</x:Int32>
+                    <x:Int32>3</x:Int32>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+
+        <Button Text="Agregar Tarea" 
+                BackgroundColor="DodgerBlue" 
+                TextColor="White" 
+                Command="{Binding AddTaskCommand}" />
+
+        <!-- Lista de tareas agregadas -->
+        <CollectionView ItemsSource="{Binding CurrentTasks}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="*,*">
+                        <!-- Primera columna: Título -->
+                        <Label Text="{Binding Title}" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       TextColor="DarkBlue"
+                       VerticalOptions="Center"
+                       Grid.Column="0" />
+                        <!-- Segunda columna: Asignado a -->
+                        <Label Text="{Binding AssignedTo}" 
+                       FontSize="14" 
+                       TextColor="Gray" 
+                       VerticalOptions="Center"
+                       Grid.Column="1" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
+
+</ContentPage>
